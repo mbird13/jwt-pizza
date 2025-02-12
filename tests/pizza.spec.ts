@@ -136,3 +136,33 @@ test('order with invalid login', async ({ page }) => {
   await page.getByRole('button', { name: 'Login' }).click();
   await expect(page.getByRole('main')).toContainText('{"code":404,"message":"unknown user"}');
 });
+
+test('login, diner dashboard, and logout', async ({ page }) => {
+  await page.route('*/**/api/auth', async (route) => {
+    const loginReq = { email: 'd@jwt.com', password: 'diner' };
+    const loginRes = { user: { id: 3, name: 'Kai Chen', email: 'd@jwt.com', roles: [{ role: 'diner' }] }, token: 'abcdef' };
+    const logoutRes = { message: 'logout successful' };
+    if (route.request().method() === 'PUT') {
+      expect(route.request().postDataJSON()).toMatchObject(loginReq);
+      await route.fulfill({ json: loginRes });
+    } else {
+      expect(route.request().method()).toBe('DELETE');
+      expect(route.request().headers()['authorization']).toBe('Bearer abcdef');
+      await route.fulfill({ json: logoutRes });
+    }
+  });
+
+
+  await page.goto('http://localhost:5173/');
+  await page.getByRole('link', { name: 'Login' }).click();
+  await page.getByRole('textbox', { name: 'Email address' }).fill('d@jwt.com');
+  await page.getByRole('textbox', { name: 'Password' }).fill('diner');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await expect(page.locator('#navbar-dark')).toContainText('Logout');
+
+  await page.getByRole('link', { name: 'kc' }).click();
+  await page.getByRole('link', { name: 'diner-dashboard' }).isVisible();
+  await expect(page.getByRole('heading')).toContainText('Your pizza kitchen');
+  await page.getByRole('link', { name: 'Logout' }).click();
+  await expect(page.locator('#navbar-dark')).toContainText('Login');
+});
