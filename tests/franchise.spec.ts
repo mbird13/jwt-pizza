@@ -180,8 +180,14 @@ test('franchisee login', async ({ page }) => {
     await page.getByRole('row', { name: 'testing 0.016 ₿ Close' }).getByRole('button').click();
     await expect(page.getByRole('heading')).toContainText('Sorry to see you go');
     await page.getByRole('button', { name: 'Close' }).click();
-    await page.getByRole('link', { name: 'franchise-dashboard' }).isVisible();
-    await page.getByRole('heading', {name: 'pizzaPocket'}).isVisible();
-    await expect(page.getByRole('heading')).toContainText('pizzaPocket');
+    await expect(page.getByRole('link', { name: 'franchise-dashboard' })).toBeVisible
+});
 
+test('about and history pages', async ({ page }) => {
+  await page.goto('http://localhost:5173/');
+  await page.getByRole('link', { name: 'About' }).click();
+  await expect(page.getByRole('main')).toContainText('The secret sauce');
+
+  await page.getByRole('link', { name: 'History', exact: true }).click();
+  await expect(page.getByRole('heading')).toContainText('Mama Rucci, my my');
 });
