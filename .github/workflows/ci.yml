@@ -52,6 +52,9 @@ jobs:
     permissions:
       id-token: write
     runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://pizza.mbird.click
     env:
       version: ${{needs.build.outputs.version}}
     steps:
