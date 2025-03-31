@@ -143,8 +143,6 @@ export function scenario_1() {
     )
     sleep(1.8)
     vars.jwt = jsonpath.query(response.json(), '$.jwt')[0];
-    console.log(response.json());
-    console.log(`Set Var: ${vars.jwt}`);
 
     response = http.post(
       'https://pizza-factory.cs329.click/api/order/verify',
