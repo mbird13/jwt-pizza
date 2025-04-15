@@ -16,7 +16,7 @@ Two URLs have different origins if they differ in:
 
 ## How CORS Works
 
-When a browser makes a cross-origin request, it automatically handles two types of CORS behaviour:
+When a browser makes a cross-origin request, it automatically handles two types of CORS behavior:
 
 ### 1. Simple Requests
 
